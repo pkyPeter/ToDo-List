@@ -2,14 +2,27 @@
 import ReactDOM from "react-dom";
 import React from "react";
 import PropTypes from "prop-types";
+import reducer from "./reducer.js";
+import { createStore }  from 'redux';
+
+console.log(createStore);
+
+//Redux初始化
+let store;
+    store = createStore(reducer, {
+      lists: [],
+      completeFilter: false,
+      incompleteFilter: true,
+      text:""
+    });
+    console.log(store.state);
 
 class ThingsList extends React.Component {
-
   render(){
-    return <div key={this.props.key} index={this.props.index}>
+    return <div index={this.props.index}>
       {this.props.text}
       <input type="checkbox" onChange={this.props.completedHandler} checked={this.props.checked} />
-      <input type="submit" value="刪除" key={this.props.key} index={this.props.index} onClick={this.props.deleteHandler} />
+      <input type="submit" value="刪除"  index={this.props.index} onClick={this.props.deleteHandler} />
      </div>;
   }
   // alterChecked() {
@@ -22,18 +35,10 @@ class ThingsList extends React.Component {
 class ThingsToDo extends React.Component {
   constructor(props) {
     super(props);
-    this.state={
-      lists: [],
-      completeFilter: false,
-      incompleteFilter: true,
-      completeList: [],
-      text:"",
-      listLength: 0,
-    }
+    this.state = store.getState();
   }
   render(){
-let test;
-test=this.state.lists
+
 // console.log(test)
 //   console.log(this.state.lists);
     return (
@@ -61,47 +66,66 @@ test=this.state.lists
     )
   }
   handleTextChange(e) {
-    this.setState({text: e.currentTarget.value});
+    store.dispatch({
+      type: "handleTextChange",
+      e
+    })
+    // this.setState({text: e.currentTarget.value});
   }
-  handleSubmit(e) {
-    let listItem;
-    listItem = { text: this.state.text, isCompleted: false }
-    this.state.lists.unshift(listItem);
-    this.setState({lists: this.state.lists});
+  handleSubmit() {
+    store.dispatch({ type: "handleSubmit" });
 
-    // let newList = this.state.lists.unshift(listItem);
-    // this.setState({lists: newList}); //這個方式不對
-
-    // let newList = this.state.lists.slice(0);
-    // newList.unshift(listItem);
-    // this.setState({lists: newList}); //如果要寫另外命名一個新的，要這樣寫
-
-    this.setState({text: ""});
+    //
+      // this.state.lists.unshift(listItem);
+      // this.setState({lists: this.state.lists});
+      //
+      // let newList = this.state.lists.unshift(listItem);
+      // this.setState({lists: newList}); //這個方式不對
+      //
+      // let newList = this.state.lists.slice(0);
+      // newList.unshift(listItem);
+      // this.setState({lists: newList}); //如果要寫另外命名一個新的，要這樣寫
+    //
+    // this.setState({text: ""});
     // console.log(listItem);
     // console.log(this.state.lists);
   }
   handleRemoveItem(index) {
-    let oldItems = this.state.lists;
-    let removeItems = this.state.lists.splice(index,1);    //這邊的Remove是被刪掉的那個item
-    this.setState({
-      lists: this.state.lists,    //整個陣列重新更新
-    })
+    store.dispatch({ type: "handleRemoveItem", index });
   }
   handleCompleteStage(index) {
-    this.state.lists[index].isCompleted = !this.state.lists[index].isCompleted;
-    this.setState({lists: this.state.lists});
-    console.log(this.state.lists);
+    store.dispatch({ type: "handleCompleteStage", index });
   }
   showall(){
-    this.setState({completeFilter: false, incompleteFilter: true});
+    store.dispatch({ type: "showall",
+    completeFilter: false,
+    incompleteFilter: true
+    });
   }
   showCompletedTask(){
-    this.setState({completeFilter: true, incompleteFilter: true});
+    store.dispatch({ type: "showCompletedTask",
+    completeFilter: true,
+    incompleteFilter: true
+    });
   }
   showIncompleteTask(){
-    this.setState({completeFilter: false, incompleteFilter: false})
+    store.dispatch({ type: "showIncompleteTask",
+    completeFilter: false,
+    incompleteFilter: false
+    });
+  }
+  refresh() {
+    this.setState(store.getState());
+  }
+  componentDidMount(){
+    this.unsubscribe = store.subscribe(this.refresh.bind(this));
+  }
+  componentWillUnmount(){
+    this.unsubscribe();
   }
 }
 
 
-ReactDOM.render(<ThingsToDo />, document.querySelector("body"));
+
+
+ReactDOM.render(<ThingsToDo />, document.querySelector("#react"));
