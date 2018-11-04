@@ -21,13 +21,13 @@ module.exports = {
   },
   module: {
      rules: [   //告訴webpack遇到不同類型檔案的時候，應該要用哪個loder處理
-      // {
-      //    test: /\.css$/,
-      //    use: [
-      //      'style-loader',
-      //      'css-loader'
-      //    ]
-      //  }
+      {
+         test: /\.css$/,
+         use: [
+           'style-loader',
+           'css-loader'
+         ]
+       },
 
       // {
       //   enforce: "pre",

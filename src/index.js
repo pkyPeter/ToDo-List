@@ -4,6 +4,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import reducer from "./reducer.js";
 import { createStore }  from 'redux';
+import "./style.css";
 
 console.log(createStore);
 
@@ -19,8 +20,8 @@ let store;
 
 class ThingsList extends React.Component {
   render(){
-    return <div index={this.props.index}>
-      {this.props.text}
+    return <div className="thingsToDo" index={this.props.index}>
+      <div>{this.props.text}</div>
       <input type="checkbox" onChange={this.props.completedHandler} checked={this.props.checked} />
       <input type="submit" value="刪除"  index={this.props.index} onClick={this.props.deleteHandler} />
      </div>;
@@ -38,15 +39,14 @@ class ThingsToDo extends React.Component {
     this.state = store.getState();
   }
   render(){
-
-// console.log(test)
-//   console.log(this.state.lists);
     return (
-      <div>
-        <div>
-          <input type="button" value="全部" onClick={this.showall.bind(this)}/>
-          <input type="button" value="已完成" onClick={this.showCompletedTask.bind(this)}/>
-          <input type="button" value="未完成" onClick={this.showIncompleteTask.bind(this)}/>
+      <div className="wrapper">
+        <div className="title">TO-DO</div>
+        <div className="sub">Try to Remember, Get Everything in Mind</div>
+        <div className="tags">
+          <input className="tag" type="button" value="全部" onClick={this.showall.bind(this)}/>
+          <input className="tag" type="button" value="已完成" onClick={this.showCompletedTask.bind(this)}/>
+          <input className="tag" type="button" value="未完成" onClick={this.showIncompleteTask.bind(this)}/>
         </div>
         <input type="text" value={this.state.text} onChange={this.handleTextChange.bind(this)}/>
         <input type="submit" value="新增" onClick={this.handleSubmit.bind(this)}/>

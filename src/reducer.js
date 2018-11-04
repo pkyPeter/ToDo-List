@@ -28,7 +28,7 @@ let reducer = function(state, action) {
       let listForRenew = state.lists;
       //這邊的removeItems是被刪掉的那個item，請注意splice的回傳值
       let removeItems = state.lists.splice(action.index,1);
-      console.log(oldItems);
+      // console.log(oldItems);
       return Object.assign({}, state, {
         lists: listForRenew
       });
